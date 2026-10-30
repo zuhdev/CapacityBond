@@ -1,0 +1,91 @@
+{
+  "acceptedAt": "2026-10-30T19:46:54.476Z",
+  "contract": "0x25BBa32bb19E495aA70D8E07b25DE0D42ED0C425",
+  "chainId": 968,
+  "reservations": {
+    "fulfilled": 3,
+    "disputed": 4
+  },
+  "provider": "0xAc17bDf0d3f6e7ef830320d4573b1d1677028f50",
+  "checks": [
+    {
+      "name": "create reservation A",
+      "passed": true,
+      "detail": "reservation #3"
+    },
+    {
+      "name": "reservation A activates only after both accept",
+      "passed": true
+    },
+    {
+      "name": "two attestor checkpoints are stored",
+      "passed": true,
+      "detail": "2 checkpoints"
+    },
+    {
+      "name": "reservation A reaches Fulfilled",
+      "passed": true
+    },
+    {
+      "name": "provider receives the full bond split",
+      "passed": true
+    },
+    {
+      "name": "provider has withdrawable collateral",
+      "passed": true,
+      "detail": "0.013"
+    },
+    {
+      "name": "reservation B reaches Claimable",
+      "passed": true,
+      "detail": "claim deadline 1793393201"
+    },
+    {
+      "name": "buyer dispute moves B to Disputed",
+      "passed": true
+    },
+    {
+      "name": "resolver split is recorded",
+      "passed": true
+    },
+    {
+      "name": "buyer is credited half the bond",
+      "passed": true,
+      "detail": "0.003"
+    },
+    {
+      "name": "no locked collateral remains",
+      "passed": true,
+      "detail": "0.0"
+    },
+    {
+      "name": "no withdrawable liabilities remain",
+      "passed": true,
+      "detail": "0.0"
+    },
+    {
+      "name": "vault has no unexplained surplus",
+      "passed": true,
+      "detail": "0.0"
+    }
+  ],
+  "transactions": [
+    "0xaf7a2cbc2317cfa006cb6ff6e8bbe08e6a784061e4e8019d381d970dabd22876",
+    "0x7677b2b5b6bd259ec660ab96f524e9251536583eb091714c6d81b846e86c6d8a",
+    "0x198fb5e9d6c11148743217c9c7adec365fa15ab144c373c696b0f664f3815d54",
+    "0x0482bccf7efc0df369f76c60ef7a0f425e78ef642ea6ff7524e23db2f51a3e0c",
+    "0x55b6e256938354f0b4a9c150f0b418a6a789759426867ce3d6ed066671dc29fb",
+    "0x18d965659b6bbcd67083ba18855006ebf9044e34855ad7b6546749aa50b4f7ce",
+    "0x095ae5f76381bb8ef47da3989fe6f7f44fe1faf1f1ba486dc5da03dc5796adc6",
+    "0x5e91a6ca2f867e7f377938dd47e213b616efab5e7297cff93ddf6e07244e8bc2",
+    "0x33da49ee597a7f52c6e9f3e2de2b032cd7751c645e403a168fa29730122c5069",
+    "0x0d7d4c2951a727ffd5fc85bb53fc0f6927f799b93ed452971b177449b25f618c",
+    "0x3dbdab63b3bc8188cc51dfda623fd3371d22d9351d8a96fac6b93df3fcc8663c",
+    "0x43d38d251d00e20680fea6e489de001dfc37ee94e78e7149a18aa898ba7d28e6",
+    "0x6b35061a06835a96e9b7373520a5b3ac52bde75711f387d03eba9db000fa43b4",
+    "0x46fa0de0c7df84604bfdad6b70c28536b13f04799eb50efde7a36e197657f017",
+    "0xc1dcfbbe5741cbf0ec62359e9dcc98ea7a4e153ac46dc7ad6eafb0c8c981a2a9",
+    "0x4b883306d243821a0b954a643c973c8e356d934833a994038871e7a8305474ff",
+    "0xaeae3f52530167d6c8d7b1bddfa9e62e2760dec06e0fd1ea2ad7fbc654ba88d8"
+  ]
+}

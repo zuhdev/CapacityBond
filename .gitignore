@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+!.env.test.example
+artifacts/
+cache/
+coverage/
+typechain-types/
+*.tsbuildinfo
+.DS_Store
+.vite/
+deployments/*.local.json

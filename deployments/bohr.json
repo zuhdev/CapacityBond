@@ -1,0 +1,13 @@
+{
+  "chainId": 968,
+  "contractName": "CapacityBond",
+  "address": "0x25BBa32bb19E495aA70D8E07b25DE0D42ED0C425",
+  "deploymentBlock": 28704812,
+  "deploymentTxHash": "0x2711388788f086fedfd9fe401ba483b4114e171d631bd9b7d128595e149e25f9",
+  "deployedAt": "2026-10-30T19:21:29.201Z",
+  "deployer": "0xAc17bDf0d3f6e7ef830320d4573b1d1677028f50",
+  "attestor": "0xaeF8871C1cc8a9042908F5c3D1961dB6eF00C31F",
+  "resolver": "0x6788E32BacAb69e240AdFb1923Ad9951eB90Ae02",
+  "gracePeriodSeconds": 300,
+  "explorerUrl": "https://scan.bohr.life"
+}

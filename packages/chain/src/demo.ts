@@ -1,0 +1,162 @@
+import type { Address } from "viem";
+import type { ActivityItem, Checkpoint, ProviderProfile, Reservation } from "./types";
+
+const now = Math.floor(Date.now() / 1000);
+const hour = 3600;
+const demoProvider = "0x1111111111111111111111111111111111111111" as Address;
+const demoBuyer = "0x2222222222222222222222222222222222222222" as Address;
+const demoAttestor = "0x3333333333333333333333333333333333333333" as Address;
+
+export const DEMO_PROVIDER_PROFILES: Array<{ address: Address; profile: ProviderProfile }> = [
+  {
+    address: demoProvider,
+    profile: {
+      name: "Northstar Compute (demo)",
+      contact: "ops@northstar.example",
+      metadataURI: "ipfs://demo/northstar-provider.json",
+      registeredAt: BigInt(now - 86_400),
+      updatedAt: BigInt(now - 2 * hour),
+      active: true,
+    },
+  },
+];
+
+export const DEMO_RESERVATIONS: Reservation[] = [
+  {
+    id: 1n,
+    provider: demoProvider,
+    buyer: demoBuyer,
+    agreementHash: `0x${"a".repeat(64)}`,
+    agreementURI: "https://example.test/offchain-agreements/demo-001",
+    capacity: "8 × A100-hours · us-east · batch inference (demo)",
+    bondAmount: 500000000000000000n,
+    serviceStart: BigInt(now - 2 * hour),
+    serviceEnd: BigInt(now + 2 * hour),
+    acceptanceDeadline: BigInt(now - 3 * hour),
+    claimWindow: 86_400n,
+    checkpointInterval: 3600n,
+    activatedAt: BigInt(now - 2 * hour),
+    fundedAt: BigInt(now - 3 * hour),
+    resolvedAt: 0n,
+    claimDeadline: 0n,
+    requiredCheckpoints: 4,
+    providerAwardBps: 0,
+    policyVersion: 1,
+    providerAccepted: true,
+    buyerAccepted: true,
+    status: 2,
+    buyerStatementURI: "",
+    buyerStatementHash: `0x${"0".repeat(64)}`,
+    resolutionURI: "",
+    resolutionHash: `0x${"0".repeat(64)}`,
+  },
+  {
+    id: 2n,
+    provider: demoProvider,
+    buyer: demoBuyer,
+    agreementHash: `0x${"b".repeat(64)}`,
+    agreementURI: "https://example.test/offchain-agreements/demo-002",
+    capacity: "16 × H100-hours · eu-west · fine-tune (demo)",
+    bondAmount: 1200000000000000000n,
+    serviceStart: BigInt(now - 6 * hour),
+    serviceEnd: BigInt(now - hour),
+    acceptanceDeadline: BigInt(now - 7 * hour),
+    claimWindow: 86400n,
+    checkpointInterval: 1800n,
+    activatedAt: BigInt(now - 6 * hour),
+    fundedAt: BigInt(now - 7 * hour),
+    resolvedAt: 0n,
+    claimDeadline: BigInt(now + 7 * hour),
+    requiredCheckpoints: 10,
+    providerAwardBps: 0,
+    policyVersion: 1,
+    providerAccepted: true,
+    buyerAccepted: true,
+    status: 4,
+    buyerStatementURI: "",
+    buyerStatementHash: `0x${"0".repeat(64)}`,
+    resolutionURI: "",
+    resolutionHash: `0x${"0".repeat(64)}`,
+  },
+  {
+    id: 3n,
+    provider: demoProvider,
+    buyer: demoBuyer,
+    agreementHash: `0x${"c".repeat(64)}`,
+    agreementURI: "https://example.test/offchain-agreements/demo-003",
+    capacity: "4 × L40S-days · reserved endpoint (demo)",
+    bondAmount: 250000000000000000n,
+    serviceStart: BigInt(now - 2 * 86_400),
+    serviceEnd: BigInt(now - 86_400),
+    acceptanceDeadline: BigInt(now - 3 * 86_400),
+    claimWindow: 86400n,
+    checkpointInterval: 7200n,
+    activatedAt: BigInt(now - 2 * 86_400),
+    fundedAt: BigInt(now - 3 * 86_400),
+    resolvedAt: BigInt(now - 20 * hour),
+    claimDeadline: 0n,
+    requiredCheckpoints: 12,
+    providerAwardBps: 10_000,
+    policyVersion: 1,
+    providerAccepted: true,
+    buyerAccepted: true,
+    status: 3,
+    buyerStatementURI: "",
+    buyerStatementHash: `0x${"0".repeat(64)}`,
+    resolutionURI: "",
+    resolutionHash: `0x${"0".repeat(64)}`,
+  },
+];
+
+export const DEMO_CHECKPOINTS: Record<string, Checkpoint[]> = {
+  "1": [
+    {
+      attestor: demoAttestor,
+      submitter: demoProvider,
+      observedAt: BigInt(now - 2 * hour + 600),
+      submittedAt: BigInt(now - 2 * hour + 620),
+      evidenceHash: `0x${"d".repeat(64)}`,
+      evidenceURI: "ipfs://demo/checkpoint-1.json",
+    },
+    {
+      attestor: demoAttestor,
+      submitter: demoProvider,
+      observedAt: BigInt(now - hour),
+      submittedAt: BigInt(now - hour + 15),
+      evidenceHash: `0x${"e".repeat(64)}`,
+      evidenceURI: "ipfs://demo/checkpoint-2.json",
+    },
+  ],
+};
+
+export const DEMO_ACTIVITY: ActivityItem[] = [
+  {
+    kind: "CheckpointSubmitted",
+    reservationId: 1n,
+    blockNumber: BigInt(now - 3600),
+    txHash: `0x${"1".repeat(64)}`,
+    logIndex: 0,
+    actor: demoProvider,
+    summary: "Demo attestor checkpoint #2 recorded",
+    timestamp: BigInt(now - 3600),
+  },
+  {
+    kind: "ReservationClaimable",
+    reservationId: 2n,
+    blockNumber: BigInt(now - 3000),
+    txHash: `0x${"2".repeat(64)}`,
+    logIndex: 0,
+    summary: "Missed checkpoint claim window opened",
+    timestamp: BigInt(now - 3000),
+  },
+  {
+    kind: "ReservationFulfilled",
+    reservationId: 3n,
+    blockNumber: BigInt(now - 2400),
+    txHash: `0x${"3".repeat(64)}`,
+    logIndex: 0,
+    actor: demoBuyer,
+    summary: "Checkpoint set complete; bond released",
+    timestamp: BigInt(now - 2400),
+  },
+];
