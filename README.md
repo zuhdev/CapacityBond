@@ -167,8 +167,10 @@ The repository is ready to import into Vercel's website:
 
 1. On vercel.com choose **Add New → Project** and import this repository.
 2. Keep the root directory at the repository root. `vercel.json` sets the install
-   command (`npm install`), build command (`npm run build`), and output directory
-   (`apps/web/dist`).
+   command (`npm install`), build command (`npm run build`), and output directory.
+   The web build mirrors `apps/web/dist` to the repo-root `dist/`, and
+   `apps/web/vercel.json` covers the case where Vercel selects `apps/web` as the root
+   directory, so the default Vercel settings work either way.
 3. No environment variables are required. The Bohr contract address is bundled from
    `deployments/bohr.json` at build time. `VITE_BOHR_RPC_URL` is optional.
 4. Deploy. The site is static and uses hash routing.
