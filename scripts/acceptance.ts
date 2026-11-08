@@ -1,7 +1,8 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { ethers } from "hardhat";
+import { ethers, network } from "hardhat";
 import {
+  activeNetwork,
   chainNow,
   confirm,
   ensureGas,
@@ -13,6 +14,13 @@ import {
 } from "./lib";
 
 async function main() {
+  const target = activeNetwork();
+  if (!target.testnet && process.env.ACCEPT_MAINNET !== "1") {
+    throw new Error(
+      "Acceptance on mainnet writes permanent public records and consumes gas from production keys.\n" +
+        "Only run it as a deliberate release gate. Re-run with ACCEPT_MAINNET=1 after reviewing docs/mainnet-readiness.md.",
+    );
+  }
   const deployment = readDeployment();
   const [provider] = await ethers.getSigners();
   if (!provider) throw new Error("No deployer/provider signer. Set DEPLOYER_PRIVATE_KEY.");
@@ -226,13 +234,14 @@ async function main() {
     transactions: txHashes,
   };
   mkdirSync(resolve(process.cwd(), "deployments"), { recursive: true });
+  const proofFile = `deployments/acceptance-${network.name}.json`;
   writeFileSync(
-    resolve(process.cwd(), "deployments/acceptance-bohr.json"),
+    resolve(process.cwd(), proofFile),
     `${JSON.stringify(output, null, 2)}\n`,
   );
 
   console.log(`\n${checks.length - failed.length}/${checks.length} acceptance checks passed`);
-  console.log("Proof: deployments/acceptance-bohr.json");
+  console.log(`Proof: ${proofFile}`);
   if (failed.length > 0) process.exitCode = 1;
 }
 

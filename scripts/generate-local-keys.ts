@@ -40,3 +40,8 @@ writeFileSync(envPath, `${header.join("\n")}\n${lines.join("\n")}\n`, { mode: 0o
 console.log("Generated local test accounts in .env (ignored by git).");
 for (const { role, wallet } of generated) console.log(`${role.padEnd(8)} ${wallet.address}`);
 console.log("\nFaucet: https://faucet.botchain.ai/basic (claim 10 test BOT to DEPLOYER_ADDRESS).");
+console.log(
+  "\nThese are testnet burner keys. Never reuse them on mainnet: production role and\n" +
+    "owner keys must come from a hardware wallet or dedicated key manager. See\n" +
+    "docs/mainnet-readiness.md before any mainnet deployment.",
+);

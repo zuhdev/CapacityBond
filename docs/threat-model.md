@@ -1,7 +1,12 @@
 # Threat model
 
-This is a testnet design review, not a security audit. No independent review has been
+This is a design review, not a security audit. No independent review has been
 performed.
+
+**Mainnet preparation status (2026-11):** deployment tooling, verification, and
+the network-guard layer are ready; the review gates at the end of this document
+remain the authority on whether production use is allowed. See
+`docs/mainnet-readiness.md` for how each open gate is treated for v1.
 
 ## Assets
 
@@ -57,7 +62,7 @@ performed.
 | Unauthorized acceptance | Wrong activation | Only provider/buyer can accept; once each; deadline and start checks | Key compromise |
 | Acceptance expired but no expiry call | Stuck funded state | Anyone can call `expireReservation` after deadline | Requires a transaction |
 | Claim window missed | Provider receives bond | Undisputed release after deadline | Buyer loses the opportunity |
-| Resolver never acts | Bond stuck in Disputed | No fallback resolver in this version | Operational risk; needs a runbook/upgrade decision |
+| Resolver never acts | Bond stuck in Disputed | No on-chain fallback resolver in this version; rotation/monitoring procedures in `docs/resolver-continuity.md` | Operational risk; requires prepared rotation path and dispute monitoring |
 | Phishing frontend / wrong contract | Loss of funds | Address in deployment record; explorer links; fixture labels; chain switch | Users must verify the host and address |
 | Key theft | Loss of role or bonded funds | Testnet-only burners; no production key management | No hardware wallet flow or multisig |
 | Chain reorg | Receipt/state mismatch | Wait for confirmation; UI refreshes after receipt | Testnet may reorg after receipt |
@@ -96,3 +101,7 @@ a fresh deployment. Production monitoring would need an independent indexer and 
 5. Durable evidence storage and availability policy.
 6. Indexed event history, monitoring, and alerting.
 7. Legal and regulatory review of the specific jurisdiction and asset model.
+
+Of these: (4) has operational mitigations ready (`docs/resolver-continuity.md`),
+and (2)/(6) have tooling scaffolding and documented interim procedures. Gates
+(1), (3), (5), and (7) remain open and untouched by this preparation.

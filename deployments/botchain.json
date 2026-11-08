@@ -1,0 +1,14 @@
+{
+  "network": "botchain",
+  "chainId": 677,
+  "contractName": "CapacityBond",
+  "address": "0xdBdf74C392E6758a297588cA3e0C75E909Fe8763",
+  "deploymentBlock": 29521745,
+  "deploymentTxHash": "0x51ffce60f23c3b53365b2a61cad2105874826e505d84fd7350807bef5f30eeb1",
+  "deployedAt": "2026-11-08T08:15:52.713Z",
+  "deployer": "0xFc4d520434e8e1D4B6e1BE4F3Ca8944eE193d680",
+  "attestor": "0xe6960a842e4b475D2425DA52a49620B81757E2a9",
+  "resolver": "0xfFe3201E352a76DB464A1678f29Fc5f07bD6fcDb",
+  "gracePeriodSeconds": 300,
+  "explorerUrl": "https://scan.botchain.ai"
+}

@@ -1,5 +1,6 @@
 import { shortAddress } from "@capacitybond/chain";
 import { useWallet } from "../hooks/useWallet";
+import { activeChainConfig } from "../lib/contract";
 import { Button } from "@capacitybond/ui";
 
 export function ConnectButton({ compact = false }: { compact?: boolean }) {
@@ -21,13 +22,13 @@ export function ConnectButton({ compact = false }: { compact?: boolean }) {
   return (
     <div className="wallet-pill">
       {!wallet.isCorrectChain ? (
-        <button type="button" className="wallet-pill__network" onClick={() => void wallet.switchToBohr()}>
-          Switch to Bohr
+        <button type="button" className="wallet-pill__network" onClick={() => void wallet.switchToNetwork()}>
+          Switch to {activeChainConfig.label.split(" ")[0]}
         </button>
       ) : (
         <span className="wallet-pill__network wallet-pill__network--ok">
           <span className="status-dot" />
-          Bohr
+          {activeChainConfig.label.split(" ")[0]}
         </span>
       )}
       <button type="button" className="wallet-pill__account" onClick={wallet.disconnect} title="Disconnect this view">

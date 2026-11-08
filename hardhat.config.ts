@@ -1,5 +1,6 @@
 import "@nomicfoundation/hardhat-ethers";
 import "@nomicfoundation/hardhat-chai-matchers";
+import "@nomicfoundation/hardhat-verify";
 import { HardhatUserConfig, subtask } from "hardhat/config";
 import { TASK_COMPILE_SOLIDITY_GET_SOLC_BUILD } from "hardhat/builtin-tasks/task-names";
 import * as fs from "fs";
@@ -60,6 +61,27 @@ const config: HardhatUserConfig = {
       chainId: 968,
       accounts,
     },
+    botchain: {
+      url: process.env.BOT_MAINNET_RPC_URL || "https://rpc.botchain.ai",
+      chainId: 677,
+      accounts,
+    },
+  },
+  etherscan: {
+    // Neither explorer requires an API key; any non-empty value is accepted.
+    apiKey: "no-key-required",
+    customChains: [
+      {
+        network: "bohr",
+        chainId: 968,
+        urls: { apiURL: "https://scan.bohr.life/api", browserURL: "https://scan.bohr.life" },
+      },
+      {
+        network: "botchain",
+        chainId: 677,
+        urls: { apiURL: "https://scan.botchain.ai/api", browserURL: "https://scan.botchain.ai" },
+      },
+    ],
   },
   mocha: { timeout: 120_000 },
 };

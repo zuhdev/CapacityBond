@@ -1,4 +1,4 @@
-import { BOHR_DEPLOYMENT, formatBot } from "@capacitybond/chain";
+import { ACTIVE_DEPLOYMENT, ACTIVE_CHAIN_CONFIG, formatBot } from "@capacitybond/chain";
 import { Button, SectionLabel } from "@capacitybond/ui";
 import { BrandMark } from "../components/Brand";
 import { ConnectButton } from "../components/ConnectButton";
@@ -20,7 +20,7 @@ export function Landing() {
           <button type="button" onClick={() => scrollToId("boundaries")}>Boundaries</button>
         </nav>
         <div className="marketing-nav__actions">
-          <span className="network-chip"><span className="status-dot" /> Bohr 968</span>
+          <span className="network-chip"><span className="status-dot" /> {ACTIVE_CHAIN_CONFIG.label}</span>
           <ConnectButton compact />
           <a className="text-link text-link--arrow" href={appPath()}>Workspace</a>
         </div>
@@ -52,7 +52,7 @@ export function Landing() {
               </button>
             </div>
             <dl className="hero__facts">
-              <div><dt>Chain</dt><dd>BOT Chain Bohr</dd></div>
+              <div><dt>Chain</dt><dd>{ACTIVE_CHAIN_CONFIG.labelFull}</dd></div>
               <div><dt>Asset</dt><dd>Native BOT</dd></div>
               <div><dt>Unit</dt><dd>One reservation</dd></div>
             </dl>
@@ -202,7 +202,7 @@ export function Landing() {
             <article className="role-card role-card--attestor">
               <span className="role-card__name">Attestor</span>
               <h3>Signs observations.</h3>
-              <p>Authorizes ordered checkpoint records. In this testnet build, the attestor is a configured test key and not an independent compute verifier.</p>
+              <p>Authorizes ordered checkpoint records. The attestor is a configured operator key, not an independent compute verifier.</p>
               <span className="role-card__action">observe → sign → submit</span>
             </article>
             <article className="role-card role-card--resolver">
@@ -243,13 +243,14 @@ export function Landing() {
             <SectionLabel index="05">Network note</SectionLabel>
             <h2>BOT Chain is the settlement rail.<br /><em>It is not the compute oracle.</em></h2>
             <p>
-              Bohr Testnet supplies an EVM execution environment and native BOT. It does
-              not supply a public compute-quality feed. This build therefore names a test
-              attestor explicitly, expects an externally funded EOA for gas, and treats
-              provider APIs as future integration points rather than protocol facts.
+              {ACTIVE_CHAIN_CONFIG.labelFull} supplies an EVM execution environment and
+              native BOT. It does not supply a public compute-quality feed. This build
+              names a trusted attestor, expects an externally funded EOA for gas, and
+              treats provider APIs as future integration points rather than protocol
+              facts.
             </p>
             <div className="research-note__facts">
-              <span><strong>968</strong> chain ID</span>
+              <span><strong>{ACTIVE_CHAIN_CONFIG.chainId}</strong> chain ID</span>
               <span><strong>Native BOT</strong> bond asset</span>
               <span><strong>EntryPoint v0.7</strong> available, not required</span>
               <span><strong>No public paymaster</strong> assumed</span>
@@ -259,7 +260,7 @@ export function Landing() {
 
         <section className="closing">
           <div>
-            <span className="eyebrow">Bohr Testnet · 968</span>
+            <span className="eyebrow">{ACTIVE_CHAIN_CONFIG.labelFull} · {ACTIVE_CHAIN_CONFIG.chainId}</span>
             <h2>Put the promise<br /><em>where the record is.</em></h2>
           </div>
           <div className="closing__right">
@@ -271,9 +272,9 @@ export function Landing() {
               <Button size="lg">Enter the workspace <span className="arrow">↗</span></Button>
             </a>
             <span className="closing__contract">
-              {BOHR_DEPLOYMENT.address
-                ? `Contract ${BOHR_DEPLOYMENT.address.slice(0, 8)}…${BOHR_DEPLOYMENT.address.slice(-6)}`
-                : "Testnet contract address pending deployment"}
+              {ACTIVE_DEPLOYMENT.address
+                ? `Contract ${ACTIVE_DEPLOYMENT.address.slice(0, 8)}…${ACTIVE_DEPLOYMENT.address.slice(-6)}`
+                : "Contract address pending deployment"}
             </span>
           </div>
         </section>

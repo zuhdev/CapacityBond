@@ -1,8 +1,16 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { ethers } from "hardhat";
+import { ethers, network } from "hardhat";
+import { currentNetwork, type NetworkDescriptor } from "./networks";
 
-export const EXPLORER = "https://scan.bohr.life";
+/**
+ * Descriptor for the network this Hardhat run targets. Scripts that also work
+ * on the in-memory "hardhat" network fall back to the Bohr testnet descriptor.
+ */
+export function activeNetwork(): NetworkDescriptor {
+  return currentNetwork(network.name);
+}
+
 export const CHECKPOINT_TYPES = {
   Checkpoint: [
     { name: "reservationId", type: "uint256" },
@@ -14,19 +22,26 @@ export const CHECKPOINT_TYPES = {
 };
 
 export interface DeploymentRecord {
+  network?: string;
   chainId: number;
+  contractName?: string;
   address: string;
+  deploymentBlock?: number;
+  deploymentTxHash?: string;
+  deployedAt?: string;
+  deployer?: string;
   attestor: string;
   resolver: string;
   gracePeriodSeconds: number;
   explorerUrl: string;
 }
 
-export function readDeployment(): DeploymentRecord {
-  const path = resolve(process.cwd(), "deployments/bohr.json");
+export function readDeployment(recordFile?: string): DeploymentRecord {
+  const file = recordFile ?? activeNetwork().recordFile;
+  const path = resolve(process.cwd(), file);
   const record = JSON.parse(readFileSync(path, "utf8")) as DeploymentRecord;
   if (!record.address || !ethers.isAddress(record.address)) {
-    throw new Error("deployments/bohr.json has no contract address. Run npm run deploy:bohr first.");
+    throw new Error(`${file} has no contract address. Run the deploy script for this network first.`);
   }
   return record;
 }
@@ -48,8 +63,8 @@ export async function sleepUntil(timestamp: number, label = "waiting"): Promise<
 }
 
 export async function confirm(label: string, tx: { hash: string; wait: (confirmations?: number) => Promise<unknown> }) {
-  console.log(`  ${label}: ${EXPLORER}/tx/${tx.hash}`);
-  const receipt = (await tx.wait()) as { status?: number } | null;
+  console.log(`  ${label}: ${activeNetwork().explorerUrl}/tx/${tx.hash}`);
+  const receipt = (await tx.wait(activeNetwork().confirmations)) as { status?: number } | null;
   if (!receipt || receipt.status !== 1) throw new Error(`${label} reverted.`);
   return receipt;
 }
@@ -102,6 +117,6 @@ export async function ensureGas(
 
 export function requireEnv(name: string): string {
   const value = process.env[name];
-  if (!value) throw new Error(`Missing ${name} in .env. Run npm run keys:generate and fund the accounts.`);
+  if (!value) throw new Error(`Missing ${name} in .env. Run npm run keys:generate for testnet accounts.`);
   return value;
 }

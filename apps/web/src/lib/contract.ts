@@ -1,9 +1,7 @@
 import {
-  BOHR_CHAIN_ID,
-  BOHR_DEPLOYMENT,
-  BOHR_RPC_URL,
+  ACTIVE_CHAIN_CONFIG,
+  ACTIVE_DEPLOYMENT,
   capacityBondAbi,
-  bohrTestnet,
   type Checkpoint,
   type ProviderProfile,
   type Reservation,
@@ -20,18 +18,23 @@ import {
 } from "viem";
 
 const envAddress = import.meta.env.VITE_CAPACITY_BOND_ADDRESS?.trim();
-const configuredAddress = envAddress && isAddress(envAddress) ? getAddress(envAddress) : BOHR_DEPLOYMENT.address;
+const configuredAddress = envAddress && isAddress(envAddress) ? getAddress(envAddress) : ACTIVE_DEPLOYMENT.address;
 
 export const CONTRACT_ADDRESS: Address | null = configuredAddress;
 export const IS_DEMO = CONTRACT_ADDRESS === null;
 
+export const activeChainConfig = ACTIVE_CHAIN_CONFIG;
+
 export const publicClient = createPublicClient({
-  chain: bohrTestnet,
-  transport: http(import.meta.env.VITE_BOHR_RPC_URL || BOHR_RPC_URL, {
-    retryCount: 2,
-    retryDelay: 600,
-    timeout: 20_000,
-  }),
+  chain: ACTIVE_CHAIN_CONFIG.chain,
+  transport: http(
+    import.meta.env.VITE_RPC_URL || import.meta.env.VITE_BOHR_RPC_URL || ACTIVE_CHAIN_CONFIG.rpcUrl,
+    {
+      retryCount: 2,
+      retryDelay: 600,
+      timeout: 20_000,
+    },
+  ),
 });
 
 export const CHECKPOINT_TYPES = {
@@ -47,7 +50,7 @@ export const CHECKPOINT_TYPES = {
 export const CHECKPOINT_DOMAIN = {
   name: "CapacityBond",
   version: "1",
-  chainId: BOHR_CHAIN_ID,
+  chainId: ACTIVE_CHAIN_CONFIG.chainId,
   verifyingContract: CONTRACT_ADDRESS ?? "0x0000000000000000000000000000000000000000",
 } as const;
 
@@ -161,5 +164,5 @@ export async function decodeCreatedReservation(hash: Hash): Promise<bigint | nul
 }
 
 export function contractUrl(address: Address): string {
-  return `${BOHR_DEPLOYMENT.explorerUrl}/address/${address}`;
+  return `${ACTIVE_CHAIN_CONFIG.explorerUrl}/address/${address}`;
 }

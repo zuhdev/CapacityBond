@@ -1,7 +1,8 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { ethers } from "hardhat";
+import { ethers, network } from "hardhat";
 import {
+  activeNetwork,
   chainNow,
   confirm,
   ensureGas,
@@ -15,6 +16,12 @@ import {
 const PROVIDER_NAME = "Northstar Compute (Bohr test fixture)";
 
 async function main() {
+  const target = activeNetwork();
+  if (!target.testnet) {
+    throw new Error(
+      "Seed creates demo fixtures and must never run on a production deployment. Use a testnet environment.",
+    );
+  }
   const deployment = readDeployment();
   const [provider] = await ethers.getSigners();
   if (!provider) throw new Error("No deployer signer. Set DEPLOYER_PRIVATE_KEY.");
@@ -216,8 +223,9 @@ async function main() {
     transactions: txHashes,
   };
   mkdirSync(resolve(process.cwd(), "deployments"), { recursive: true });
+  const proofFile = `deployments/seed-${network.name}.json`;
   writeFileSync(
-    resolve(process.cwd(), "deployments/seed-bohr.json"),
+    resolve(process.cwd(), proofFile),
     `${JSON.stringify(output, null, 2)}\n`,
   );
 
@@ -225,7 +233,7 @@ async function main() {
   console.log(`  active:    reservation #${ids.active}`);
   console.log(`  completed: reservation #${ids.completed}`);
   console.log(`  funded:    reservation #${ids.funded}`);
-  console.log(`  proof:     deployments/seed-bohr.json`);
+  console.log(`  proof:     ${proofFile}`);
 }
 
 main().catch((error) => {

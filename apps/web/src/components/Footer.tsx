@@ -1,4 +1,4 @@
-import { BOT_MAINNET_EXPLORER_URL, BOT_WEBSITE_URL, BOHR_EXPLORER_URL } from "@capacitybond/chain";
+import { BOHR_EXPLORER_URL as BOHR_TESTNET_EXPLORER_URL, BOT_MAINNET_EXPLORER_URL, BOT_WEBSITE_URL, ACTIVE_CHAIN_CONFIG as activeChainConfig } from "@capacitybond/chain";
 
 function SectionLink({ id, children }: { id: string; children: string }) {
   return (
@@ -28,8 +28,8 @@ export function Footer() {
         <div className="site-footer__statement">
           <span className="footer-kicker">Built for the reservation layer</span>
           <p>
-            CapacityBond is an independent testnet protocol. It does not sell compute,
-            verify hardware, or underwrite service outcomes.
+            CapacityBond is an independent, un-audited escrow protocol. It does not
+            sell compute, verify hardware, or underwrite service outcomes.
           </p>
         </div>
         <div className="site-footer__cols">
@@ -42,17 +42,21 @@ export function Footer() {
           <div>
             <span className="footer-heading">BOT Chain</span>
             <a href={BOT_WEBSITE_URL} target="_blank" rel="noreferrer">botchain.ai ↗</a>
-            <a href={BOHR_EXPLORER_URL} target="_blank" rel="noreferrer">Bohr explorer ↗</a>
-            <a href={BOT_MAINNET_EXPLORER_URL} target="_blank" rel="noreferrer">Mainnet explorer ↗</a>
+            <a href={activeChainConfig.explorerUrl} target="_blank" rel="noreferrer">Explorer ↗</a>
+            {activeChainConfig.testnet ? (
+              <a href={BOT_MAINNET_EXPLORER_URL} target="_blank" rel="noreferrer">Mainnet explorer ↗</a>
+            ) : (
+              <a href={BOHR_TESTNET_EXPLORER_URL} target="_blank" rel="noreferrer">Testnet explorer ↗</a>
+            )}
           </div>
         </div>
       </div>
       <div className="site-footer__bottom">
         <div className="footer-bot">
           <img src="/brand/bot-chain-logo.png" alt="BOT Chain" width="28" height="28" />
-          <span>Built on BOT Chain · Bohr Testnet 968</span>
+          <span>Built on BOT Chain · {activeChainConfig.label}</span>
         </div>
-        <span>Testnet software. No audit. No production custody.</span>
+        <span>{activeChainConfig.testnet ? "Testnet software. No audit. No production custody." : "Un-audited software. Review gates apply before production use."}</span>
         <span className="footer-mono">© 2026 CapacityBond</span>
       </div>
     </footer>

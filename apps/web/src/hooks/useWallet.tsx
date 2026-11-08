@@ -8,10 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import {
-  BOHR_CHAIN_ID,
-  BOHR_EXPLORER_URL,
-  BOHR_RPC_URL,
-  bohrTestnet,
+  ACTIVE_CHAIN_CONFIG,
   capacityBondAbi,
 } from "@capacitybond/chain";
 import {
@@ -46,7 +43,7 @@ interface WalletContextValue {
   error: string | null;
   connect: () => Promise<void>;
   disconnect: () => void;
-  switchToBohr: () => Promise<void>;
+  switchToNetwork: () => Promise<void>;
   write: (request: { functionName: string; args?: readonly unknown[]; value?: bigint }) => Promise<Hash>;
   signCheckpoint: (message: {
     reservationId: bigint;
@@ -92,7 +89,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       setWalletClient(
         createWalletClient({
           account: normalized,
-          chain: bohrTestnet,
+          chain: ACTIVE_CHAIN_CONFIG.chain,
           transport: custom(window.ethereum),
         }) as WalletClient,
       );
@@ -111,9 +108,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     setError(null);
   }, []);
 
-  const switchToBohr = useCallback(async () => {
+  const switchToNetwork = useCallback(async () => {
     if (!window.ethereum) throw new Error("No injected wallet found.");
-    const chainIdHex = `0x${BOHR_CHAIN_ID.toString(16)}`;
+    const chainIdHex = `0x${ACTIVE_CHAIN_CONFIG.chainId.toString(16)}`;
     try {
       await window.ethereum.request({
         method: "wallet_switchEthereumChain",
@@ -127,10 +124,10 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         params: [
           {
             chainId: chainIdHex,
-            chainName: "BOT Chain Bohr Testnet",
+            chainName: ACTIVE_CHAIN_CONFIG.labelFull,
             nativeCurrency: { name: "BOT", symbol: "BOT", decimals: 18 },
-            rpcUrls: [BOHR_RPC_URL],
-            blockExplorerUrls: [BOHR_EXPLORER_URL],
+            rpcUrls: [ACTIVE_CHAIN_CONFIG.rpcUrl],
+            blockExplorerUrls: [ACTIVE_CHAIN_CONFIG.explorerUrl],
           },
         ],
       });
@@ -154,7 +151,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       setWalletClient(
         createWalletClient({
           account: normalized,
-          chain: bohrTestnet,
+          chain: ACTIVE_CHAIN_CONFIG.chain,
           transport: custom(provider),
         }) as WalletClient,
       );
@@ -182,18 +179,18 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }): Promise<Hash> => {
       if (!CONTRACT_ADDRESS) throw new Error("No contract is configured. The workspace is in demo mode.");
       if (!walletClient || !address) throw new Error("Connect a wallet before sending a transaction.");
-      if (chainId !== BOHR_CHAIN_ID) await switchToBohr();
+      if (chainId !== ACTIVE_CHAIN_CONFIG.chainId) await switchToNetwork();
       return walletClient.writeContract({
         address: CONTRACT_ADDRESS,
         abi: capacityBondAbi,
         functionName,
         args,
         account: address,
-        chain: bohrTestnet,
+        chain: ACTIVE_CHAIN_CONFIG.chain,
         ...(value === undefined ? {} : { value }),
       } as never);
     },
-    [address, chainId, switchToBohr, walletClient],
+    [address, chainId, switchToNetwork, walletClient],
   );
 
   const signCheckpoint = useCallback(
@@ -205,7 +202,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       evidenceURI: string;
     }): Promise<`0x${string}`> => {
       if (!walletClient || !address) throw new Error("Connect the attestor wallet first.");
-      if (chainId !== BOHR_CHAIN_ID) await switchToBohr();
+      if (chainId !== ACTIVE_CHAIN_CONFIG.chainId) await switchToNetwork();
       return walletClient.signTypedData({
         account: address,
         domain: CHECKPOINT_DOMAIN,
@@ -214,7 +211,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         message,
       });
     },
-    [address, chainId, switchToBohr, walletClient],
+    [address, chainId, switchToNetwork, walletClient],
   );
 
   const value = useMemo<WalletContextValue>(
@@ -224,11 +221,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       walletClient,
       isConnecting,
       isAvailable,
-      isCorrectChain: chainId === BOHR_CHAIN_ID,
+      isCorrectChain: chainId === ACTIVE_CHAIN_CONFIG.chainId,
       error,
       connect,
       disconnect,
-      switchToBohr,
+      switchToNetwork,
       write,
       signCheckpoint,
     }),
@@ -241,7 +238,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       error,
       connect,
       disconnect,
-      switchToBohr,
+      switchToNetwork,
       write,
       signCheckpoint,
     ],

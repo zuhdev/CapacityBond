@@ -18,7 +18,7 @@ import { ConnectButton } from "../components/ConnectButton";
 import { useNow, useProtocol, type ProtocolSnapshot } from "../hooks/useProtocol";
 import { useTx } from "../hooks/useTx";
 import { useWallet } from "../hooks/useWallet";
-import { CONTRACT_ADDRESS, IS_DEMO, contractUrl, readWithdrawable } from "../lib/contract";
+import { activeChainConfig, CONTRACT_ADDRESS, IS_DEMO, contractUrl, readWithdrawable } from "../lib/contract";
 import { appPath } from "../lib/routes";
 
 export function Dashboard() {
@@ -72,8 +72,9 @@ export function Dashboard() {
 
       {isDemo ? (
         <Notice tone="info" title="Fixture preview — no contract configured">
-          These reservations are illustrative fixtures. Deploy to Bohr and update
-          <code> deployments/bohr.json </code> to read and write live protocol state.
+          These reservations are illustrative fixtures. Deploy to the configured
+          network and update <code> {activeChainConfig.recordFile} </code> to read and
+          write live protocol state.
         </Notice>
       ) : null}
 
@@ -85,7 +86,7 @@ export function Dashboard() {
 
       <div className="ledger-rail">
         <span className={`live-mark ${isDemo ? "live-mark--demo" : ""}`}>
-          <span className="status-dot" /> {isDemo ? "Fixture data" : "Live on Bohr 968"}
+          <span className="status-dot" /> {isDemo ? "Fixture data" : `Live on ${activeChainConfig.label}`}
         </span>
         <span className="rail-separator" />
         {CONTRACT_ADDRESS ? (
@@ -102,7 +103,7 @@ export function Dashboard() {
       </div>
 
       {!snapshot && loading ? (
-        <div className="loading-panel"><Spinner label="Reading reservation state from Bohr" /></div>
+        <div className="loading-panel"><Spinner label={`Reading reservation state from ${activeChainConfig.labelFull}`} /></div>
       ) : null}
 
       {snapshot && coverage ? (
@@ -205,7 +206,11 @@ export function Dashboard() {
                   <span>{wallet.address ? shortAddress(wallet.address) : "Not connected"}</span>
                   <ConnectButton compact />
                 </div>
-                <p className="side-note">Writes require Bohr Testnet 968. Test BOT is required for bonds and gas.</p>
+                <p className="side-note">
+                  {activeChainConfig.testnet
+                    ? `Writes require ${activeChainConfig.labelFull}. Test BOT is required for bonds and gas.`
+                    : `Writes require ${activeChainConfig.labelFull}. BOT is required for bonds and gas.`}
+                </p>
               </section>
             </aside>
           </div>
@@ -213,7 +218,7 @@ export function Dashboard() {
           {tx.state.status !== "idle" ? (
             <div className={`tx-toast tx-toast--${tx.state.status}`}>
               <span className="tx-toast__label">{tx.state.label}</span>
-              <span>{tx.state.status === "confirmed" ? "Confirmed on Bohr" : tx.state.status === "pending" ? "Waiting for receipt" : tx.state.status === "awaiting-signature" ? "Confirm in wallet" : tx.state.error}</span>
+              <span>{tx.state.status === "confirmed" ? `Confirmed on ${activeChainConfig.chain.name}` : tx.state.status === "pending" ? "Waiting for receipt" : tx.state.status === "awaiting-signature" ? "Confirm in wallet" : tx.state.error}</span>
               {tx.state.hash ? <a href={explorerTxUrl(tx.state.hash)} target="_blank" rel="noreferrer">View ↗</a> : null}
             </div>
           ) : null}
@@ -229,7 +234,7 @@ function ReservationTable({ snapshot, now }: { snapshot: ProtocolSnapshot; now: 
       <div className="empty-ledger">
         <span className="empty-ledger__index">00</span>
         <h3>No reservations yet.</h3>
-        <p>Create the first reservation or seed the testnet ledger.</p>
+        <p>Create the first reservation on this contract.</p>
         <a href={appPath("/new")} className="text-link text-link--arrow">Create reservation</a>
       </div>
     );

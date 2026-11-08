@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  BOHR_DEPLOYMENT,
+  ACTIVE_DEPLOYMENT,
   DEMO_ACTIVITY,
   DEMO_CHECKPOINTS,
   DEMO_PROVIDER_PROFILES,
@@ -225,7 +225,7 @@ export function useProtocol() {
     error,
     refresh,
     isDemo: IS_DEMO,
-    deployment: BOHR_DEPLOYMENT,
+    deployment: ACTIVE_DEPLOYMENT,
   };
 }
 

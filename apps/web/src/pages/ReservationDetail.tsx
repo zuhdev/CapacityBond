@@ -32,6 +32,7 @@ import { useNow, useProtocol, useReservationDetail } from "../hooks/useProtocol"
 import { useTx } from "../hooks/useTx";
 import { useWallet } from "../hooks/useWallet";
 import {
+  activeChainConfig,
   CONTRACT_ADDRESS,
   IS_DEMO,
   contractUrl,
@@ -101,7 +102,7 @@ export function ReservationDetail({ id }: { id: bigint }) {
   }
 
   if (loading) {
-    return <div className="workspace"><div className="loading-panel loading-panel--tall"><Spinner label="Reading reservation from Bohr" /></div></div>;
+    return <div className="workspace"><div className="loading-panel loading-panel--tall"><Spinner label={`Reading reservation from ${activeChainConfig.labelFull.split(" ")[0]}`} /></div></div>;
   }
 
   if (error || !reservation) {
@@ -299,7 +300,7 @@ export function ReservationDetail({ id }: { id: bigint }) {
           {tx.state.status !== "idle" ? (
             <div className={`tx-card tx-card--${tx.state.status}`}>
               <span className="mono-label">{tx.state.label ?? "TRANSACTION"}</span>
-              <strong>{tx.state.status === "confirmed" ? "Confirmed on Bohr" : tx.state.status === "pending" ? "Waiting for receipt" : tx.state.status === "awaiting-signature" ? "Confirm in wallet" : tx.state.error}</strong>
+              <strong>{tx.state.status === "confirmed" ? `Confirmed on ${activeChainConfig.chain.name}` : tx.state.status === "pending" ? "Waiting for receipt" : tx.state.status === "awaiting-signature" ? "Confirm in wallet" : tx.state.error}</strong>
               {tx.state.hash ? <a href={explorerTxUrl(tx.state.hash)} target="_blank" rel="noreferrer">View transaction ↗</a> : null}
             </div>
           ) : null}
@@ -307,7 +308,7 @@ export function ReservationDetail({ id }: { id: bigint }) {
           <section className="network-card">
             <span className="mono-label">CONTRACT CONTEXT</span>
             <dl>
-              <div><dt>Network</dt><dd>Bohr Testnet · 968</dd></div>
+              <div><dt>Network</dt><dd>{activeChainConfig.labelFull} · {activeChainConfig.chainId}</dd></div>
               <div><dt>Contract</dt><dd>{CONTRACT_ADDRESS ? <AddressChip address={CONTRACT_ADDRESS} href={contractUrl(CONTRACT_ADDRESS)} /> : "Pending"}</dd></div>
               <div><dt>Attestor</dt><dd><AddressChip address={snapshot?.attestor ?? "0x0000000000000000000000000000000000000000"} /></dd></div>
               <div><dt>Resolver</dt><dd><AddressChip address={snapshot?.resolver ?? "0x0000000000000000000000000000000000000000"} /></dd></div>
@@ -754,9 +755,9 @@ function ActionPanel({
     return (
       <section className="action-card action-card--warning">
         <span className="mono-label">WRONG NETWORK</span>
-        <h3>Switch to Bohr.</h3>
-        <p>Writes must be sent to BOT Chain Bohr Testnet, chain ID 968.</p>
-        <Button variant="secondary" size="sm" onClick={() => void wallet.switchToBohr()}>Switch network</Button>
+        <h3>Switch to {activeChainConfig.label.split(" ")[0]}.</h3>
+        <p>Writes must be sent to {activeChainConfig.labelFull}, chain ID {activeChainConfig.chainId}.</p>
+        <Button variant="secondary" size="sm" onClick={() => void wallet.switchToNetwork()}>Switch network</Button>
       </section>
     );
   }

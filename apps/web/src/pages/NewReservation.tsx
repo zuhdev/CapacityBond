@@ -11,7 +11,7 @@ import { getAddress, isAddress, keccak256, parseEther, toBytes } from "viem";
 import { useProtocol } from "../hooks/useProtocol";
 import { useTx } from "../hooks/useTx";
 import { useWallet } from "../hooks/useWallet";
-import { CONTRACT_ADDRESS, IS_DEMO, decodeCreatedReservation } from "../lib/contract";
+import { activeChainConfig, CONTRACT_ADDRESS, IS_DEMO, decodeCreatedReservation } from "../lib/contract";
 import { appPath, navigate } from "../lib/routes";
 
 function localInputFrom(date: Date): string {
@@ -281,7 +281,7 @@ export function NewReservation() {
               <li>The provider pays the bond and all gas.</li>
               <li>The buyer must accept before the deadline and before service starts.</li>
               <li>No checkpoints can be submitted after service end plus grace.</li>
-              <li>Testnet only. No audit, no production custody.</li>
+              <li>Un-audited software. Bonds are real BOT on {activeChainConfig.labelFull}.</li>
             </ul>
           </div>
         </aside>

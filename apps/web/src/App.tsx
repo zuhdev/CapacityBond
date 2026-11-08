@@ -7,6 +7,7 @@ import { Landing } from "./pages/Landing";
 import { NewReservation } from "./pages/NewReservation";
 import { Providers } from "./pages/Providers";
 import { ReservationDetail } from "./pages/ReservationDetail";
+import { activeChainConfig } from "./lib/contract";
 import { appPath, useHashRoute } from "./lib/routes";
 
 export function App() {
@@ -35,9 +36,9 @@ function WorkspaceShell({
         </nav>
         <div className="app-nav__right">
           {wallet.address && !wallet.isCorrectChain ? (
-            <button type="button" className="network-warning" onClick={() => void wallet.switchToBohr()}>Wrong network</button>
+            <button type="button" className="network-warning" onClick={() => void wallet.switchToNetwork()}>Wrong network</button>
           ) : (
-            <span className="network-chip"><span className="status-dot" /> Bohr 968</span>
+            <span className="network-chip"><span className="status-dot" /> {activeChainConfig.label}</span>
           )}
           <ConnectButton compact />
           <a href="#/" className="app-nav__site" title="Public site" aria-label="Open the public site">?</a>
